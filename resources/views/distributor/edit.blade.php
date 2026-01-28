@@ -21,11 +21,6 @@
         </div>
         <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
-            <div class="mx-3">
-              <a href="{{route('distributor.create')}}" class="btn btn-primary btn-sm mb-0">Add New {{ $title }}</a>
-            </div>
-            </li>
-            <li class="nav-item d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">Sign In</span>
@@ -240,36 +235,37 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>{{$title}} Data</h6>
+              <h6>Edit {{$title}} Data</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-primary text-xs font-weight-bolder opacity-7">No</th>
-                      <th class="text-uppercase text-primary text-xs font-weight-bolder opacity-7">Distributor's Name</th>
-                      <th class="text-uppercase text-primary text-xs font-weight-bolder opacity-7">Addresses</th>
-                      <th class="text-uppercase text-primary text-xs font-weight-bolder opacity-7">Phone Number</th>
-                      <th class="text-uppercase text-primary text-xs font-weight-bolder opacity-7">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach ($datas as $nmr => $data)
-                    <tr>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4 text-center">{{$nmr + 1 . "."}}</td>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->nama_distributor}}</td>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->alamat_distributor}}</td>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->notelepon_distributor}}</td>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4">
-                          <a href="{{ route('distributor.edit', $data->id) }}"><img src="{{asset('be/assets/img/icons/edit.png')}}" alt="" width="20"></a>
-                          <a href=""><img src="{{asset('be/assets/img/icons/delete.png')}}" alt="" width="20"></a>
-                        </td>
-                    </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
+                <form action="{{ route('distributor.update', $data->id) }}" method="POST" id="form">
+                    @method('PUT')
+                    @csrf
+                    <div class="row ms-3 me-3">
+                        <div class="col-12">
+                            <div class="mb-3 px-3 pt-3">
+                                <label for="nama_distributor" class="form-label">Nama Distributor</label>
+                                <input type="text" class="form-control" id="nama_distributor" name="nama_distributor" placeholder="Enter Distributor Name" value="{{$data->nama_distributor}}">
+                            </div>
+                            <div class="mb-3 px-3 pt-3">
+                                <label for="alamat_distributor" class="form-label">Alamat Distributor</label>
+                                <textarea type="text" class="form-control" id="alamat_distributor" name="alamat_distributor" placeholder="Enter Distributor Addresses" rows="5">{{$data->alamat_distributor}}</textarea>
+                            </div>
+                            <div class="mb-3 px-3 pt-3">
+                                <label for="notelepon_distributor" class="form-label">No. Telp Distributor</label>
+                                <input type="text" class="form-control" id="notelepon_distributor" name="notelepon_distributor" placeholder="Enter Distributor Phone Number" value="{{$data->notelepon_distributor}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ms-3 me-3 mt-3">
+                        <div class="col-12">
+                            <div class="px-3 pb-3 text-end">
+                                <a href="{{ route('distributor.index')}}" class="btn bg-gradient-secondary me-3">Cancel</a>
+                                <button type="button" id="simpan" class="btn bg-gradient-primary">Save New {{ $title }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
           </div>
         </div>
@@ -313,16 +309,30 @@
           </div>
         </div>
       </footer>
-    </div>
-    <script>
-      @if (session('simpan'))
-        swal("Success", "{{ session('simpan') }}", "success");
-      @endif
-      @if (session('ubah'))
-        swal("Success", "{{ session('ubah') }}", "success");
-      @endif
-      @if (session('duplikat'))
+      <script>
+        let btnSimpan = document.getElementById('simpan');
+        let form = document.getElementById('form');
+        btnSimpan.addEventListener('click', function() {
+            if(nama_distributor.value.trim() === '') {
+                nama_distributor.focus();
+                swal("Invalid!", "Distributor Name Cannot Be Empty!", "error");
+            }
+            else if(alamat_distributor.value.trim() === '') {
+                alamat_distributor.focus();
+                swal("Invalid!", "Distributor Addresses Cannot Be Empty!", "error");
+            }
+            else if(notelepon_distributor.value.trim() === '') { 
+                notelepon_distributor.focus();
+                swal("Invalid!", "Distributor Phone Number Cannot Be Empty!", "error");
+            }
+            else {
+                form.submit();
+            }
+        });
+
+        @if (session('duplikat'))
         swal("Duplicated Data!", "{{ session('duplikat') }}", "error");
-      @endif
-    </script>
+        @endif
+      </script>
+    </div>
 @endsection

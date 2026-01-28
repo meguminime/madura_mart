@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Distributor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DistributorController extends Controller
 {
@@ -47,6 +48,7 @@ class DistributorController extends Controller
     public function show(string $id)
     {
         //
+        
     }
 
     /**
@@ -55,6 +57,10 @@ class DistributorController extends Controller
     public function edit(string $id)
     {
         //
+        return view('distributor.edit', [
+            'title' => 'Distributor',
+            'data' => Distributor::findOrFail($id)
+        ]);
     }
 
     /**
@@ -63,6 +69,22 @@ class DistributorController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $distributor_lama = DB::table('distributors')->where('id', $id)->value('nama_distributor');
+        $nama = DB::table('distributors')->where('nama_distributor', $request->nama_distributor)->value('nama_distributor');
+        $alamat = DB::table('distributors')->where('alamat_distributor', $request->alamat_distributor)->value('alamat_distributor');
+        $notelepon = DB::table('distributors')->where('notelepon_distributor', $request->notelepon_distributor)->value('notelepon_distributor');
+
+        if ($request->nama_distributor == $nama && $request->alamat_distributor == $alamat && $request->notelepon_distributor == $notelepon) {
+            return redirect()->route('distributor.edit', $id)->with('duplikat', 'Distributor ' . $request->nama_distributor . ' data with the same address ' . $request->alamat_distributor . ' and phone number ' . $request->notelepon_distributor . ' is already exists. Please use different data.');
+        }else{
+            //
+            $data = $request->only(['nama_distributor', 'alamat_distributor', 'notelepon_distributor']);
+            $distributor = Distributor::findOrFail($id);
+            $distributor->update($data);
+            return redirect()->route('distributor.index')->with('ubah', 'The Distributor Data, ' . $distributor_lama . ' become ' . $request->nama_distributor . ', has been succesfully updated');
+        }
+        
+        
     }
 
     /**
