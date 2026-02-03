@@ -17,8 +17,6 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'tgl_expired' => 'date',
-        'harga_jual' => 'decimal:2',
-        'stok' => 'integer',
+    'tgl_expired' => 'date'
     ];
 }
