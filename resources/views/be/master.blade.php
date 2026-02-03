@@ -18,10 +18,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{asset('be/assets/img/Morgana-removebg-preview.png')}}">
-  <link rel="icon" type="image/png" href="{{asset('be/assets/img/Morgana-removebg-preview.png')}}">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{asset('be/assets/img/duong2.gif')}}">
+  <link rel="icon" type="image/png" href="{{asset('be/assets/img/duong2.gif.png')}}">
   <title>
-    Morgana Mart - {{ $title }}
+    Athalayana Mart - {{ $title }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -46,8 +46,8 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/soft-ui-dashboard/pages/dashboard.html " target="_blank">
-        <img src="{{asset('be/assets/img/Morgana-removebg-preview.png')}}" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold">Morgana Mart</span>
+        <img src="{{asset('be/assets/img/duong2.gif')}}" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold">Madura Mart</span>
       </a>
     </div>
     <hr class="horizontal dark mt-0">
@@ -62,6 +62,9 @@
   @endif
   @if ($title === 'Distributor')
     @yield('distributor')
+  @endif
+  @if (str_contains($title, 'Product') || $title === 'Products')
+    @yield('products')
   @endif
   </main>   
   <div class="fixed-plugin">

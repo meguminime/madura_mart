@@ -261,10 +261,26 @@
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->nama_distributor}}</td>
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->alamat_distributor}}</td>
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">{{$data->notelepon_distributor}}</td>
-                        <td class="text-uppercase text-xs text-secondary mb-0 ps-4">
-                          <a href="{{ route('distributor.edit', $data->id) }}"><img src="{{asset('be/assets/img/icons/edit.png')}}" alt="" width="20"></a>
-                          <a href=""><img src="{{asset('be/assets/img/icons/delete.png')}}" alt="" width="20"></a>
-                        </td>
+                         <!-- ACTIONS -->
+                  <td class="ps-4">
+                    <a href="{{ route('distributor.edit', $data->id) }}">
+                      <img src="{{ asset('be/assets/img/icons/edit.png') }}" width="20">
+                    </a>
+
+                    <a href="javascript:void(0)" onclick="hapusData(event, {{ $data->id }})">
+                      <img src="{{ asset('be/assets/img/icons/delete.png') }}"
+                           width="20"
+                           style="cursor:pointer;">
+                    </a>
+
+                    <form id="form-hapus-{{ $data->id }}"
+                          action="{{ route('distributor.destroy', $data->id) }}"
+                          method="POST"
+                          style="display:none;">
+                      @csrf
+                      @method('DELETE')
+                    </form>
+                  </td>
                     </tr>
                     @endforeach
                   </tbody>
@@ -314,6 +330,29 @@
         </div>
       </footer>
     </div>
+
+    <!-- SWEETALERT2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function hapusData(event, id) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Yakin?',
+        text: 'Data distributor akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-hapus-' + id).submit();
+        }
+    });
+}
+</script>
+
     <script>
       @if (session('simpan'))
         swal("Success", "{{ session('simpan') }}", "success");

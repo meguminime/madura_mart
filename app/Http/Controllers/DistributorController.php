@@ -57,7 +57,10 @@ class DistributorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $distributor = Distributor::findOrFail($id);
+        $nama = $distributor->nama_distributor;
+        $distributor->delete();
+        return redirect()->route('distributor.index')->with('hapus', 'The Distributor Data ' . $nama . ' has been succesfully deleted');
         
     }
 
@@ -100,8 +103,10 @@ class DistributorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy($id)
+{
+    DB::table('distributors')->where('id', $id)->delete();
+    return redirect()->back();
+}
+
 }

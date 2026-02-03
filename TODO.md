@@ -1,0 +1,5 @@
+- [x] Update ProductController store method: add unique validation for nama_barang, change foto_barang to file validation, handle file upload
+- [x] Update ProductController update method: add unique validation for nama_barang, handle file upload
+- [x] Update create.blade.php: add enctype to form, change foto_barang to file input, add error display
+- [x] Update edit.blade.php: add enctype to form, change foto_barang to file input, add error display
+- [ ] Test the changes
