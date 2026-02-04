@@ -13,7 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('be.products.index', [
+        return view('products.index', [
             'title' => 'Products',
             'datas' => Product::all()
         ]);
@@ -24,7 +24,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('be.products.create', [
+        return view('products.create', [
             'title' => 'Create Product',
         ]);
     }
@@ -64,7 +64,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = Product::findOrFail($id);
-        return view('be.products.show', compact('product'));
+        return view('products.show', compact('product'));
     }
 
     /**
@@ -73,7 +73,7 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
-        return view('be.products.edit', [
+        return view('products.edit', [
             'product' => $product,
             'title' => 'Edit Product'
         ]);

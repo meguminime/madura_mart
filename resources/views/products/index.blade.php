@@ -316,4 +316,16 @@
             }
         });
     </script>
+    
+    <script>
+      @if (session('simpan'))
+        swal("Success", "{{ session('simpan') }}", "success");
+      @endif
+      @if (session('ubah'))
+        swal("Success", "{{ session('ubah') }}", "success");
+      @endif
+      @if (session('duplikat'))
+        swal("Duplicated Data!", "{{ session('duplikat') }}", "error");
+      @endif
+    </script>
 @endsection
