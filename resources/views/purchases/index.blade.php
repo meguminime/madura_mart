@@ -42,31 +42,19 @@
                                         </th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Kode Barang
+                                            No Nota
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Nama Barang
+                                            Tanggal Nota
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Gambar
+                                            Distributor
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Jenis Barang
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Tanggal Expired
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Harga Jual
-                                        </th>
-                                        <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Stok
+                                            Total Bayar
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -83,34 +71,19 @@
                                             </td>
                                             <td class="align-middle">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->kd_barang }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->no_nota }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->nama_barang }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                @if($item->foto_barang)
-                                                    <img src="{{ asset('storage/' . $item->foto_barang) }}" alt="{{ $item->nama_barang }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
-                                                @else
-                                                    <span class="text-secondary text-xs font-weight-bold">No Image</span>
-                                                @endif
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->tgl_nota ? $item->tgl_nota->format('Y-m-d') : '-' }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->jenis_barang }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->distributor ? $item->distributor->nama_distributor : '-' }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->tgl_expired ? $item->tgl_expired->format('Y-m-d') : '-' }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->harga_jual ? 'Rp ' . number_format($item->harga_jual, 0, ',', '.') : '-' }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $item->stok ?? '-' }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->total_bayar ? 'Rp ' . number_format($item->total_bayar, 0, ',', '.') : '-' }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
@@ -140,9 +113,9 @@
                             </table>
                         </div>
                         <div class="px-4 py-3 text-end">
-                            <a class="btn bg-gradient-dark mb-0" id="btn-add-product"
+                            <a class="btn bg-gradient-dark mb-0" id="btn-add-purchase"
                                 href="{{ route('purchases.create') }}">
-                                <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Product
+                                <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Purchase
                             </a>
                         </div>
                     </div>
@@ -247,7 +220,7 @@
 
                     Swal.fire({
                         title: 'Apakah Anda yakin?',
-                        text: "Data produk ini akan dihapus secara permanen!",
+                        text: "Data pembelian ini akan dihapus secara permanen!",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#344767', // Warna merah khas 'danger'
