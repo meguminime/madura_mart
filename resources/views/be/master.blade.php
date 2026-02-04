@@ -39,6 +39,7 @@
   <!-- Sweet Alert -->
    <script src="{{asset('be/assets/js/plugins/sweetalert.js')}}"></script>
    <link rel="stylesheet" href="{{asset('be/assets/css/sweetalert.css')}}">
+   <link rel="stylesheet" href="{{ asset('css/animation.css') }}">
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">

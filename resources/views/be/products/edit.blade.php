@@ -129,7 +129,7 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         
     <!-- form -->
-                        <form action="{{ route('products.update', $product->id) }}" 
+    <form action="{{ route('products.update', $product->id) }}" 
       method="POST" 
       enctype="multipart/form-data" 
       id="form">
@@ -206,10 +206,7 @@
                 </a>
 
                 <!-- TETAP BUTTON BIASA -->
-                <button type="button" 
-                        id="simpan" 
-                        class="btn bg-gradient-primary">
-                    Update {{ $title }}
+                <button type="button" id="simpan" class="btn bg-gradient-primary">Update {{ $title }}
                 </button>
             </div>
         </div>
@@ -217,7 +214,7 @@
 </form>
 <script>
 document.getElementById('simpan').addEventListener('click', function () {
-    document.getElementById('form').submit();
+document.getElementById('form').submit();
 });
 </script>
                     </div>
@@ -259,29 +256,37 @@ document.getElementById('simpan').addEventListener('click', function () {
         </footer>
     </div>
 
-    <script>
-        let btnSimpan = document.getElementById('simpan');
-        let form = document.getElementById('form');
-        btnSimpan.addEventListener('click', function() {
-            if(kd_barang.value.trim() === '') {
-                kd_barang.focus();
-                Swal.fire("Invalid!", "Product Code Cannot Be Empty!", "error");
-            }
-            else if(nama_barang.value.trim() === '') {
-                nama_barang.focus();
-                Swal.fire("Invalid!", "Product Name Cannot Be Empty!", "error");
-            }
-            else if(jenis_barang.value.trim() === '') {
-                jenis_barang.focus();
-                Swal.fire("Invalid!", "Product Type Cannot Be Empty!", "error");
-            }
-            else {
-                form.submit();
-            }
-        });
+   <script>
+    const editSection = document.getElementById('edit-section');
 
-        @if (session('duplikat'))
-        Swal.fire("Duplicated Data!", "{{ session('duplikat') }}", "error");
-        @endif
+    @if (session('duplikat'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Duplicated Data!',
+            text: "{{ session('duplikat') }}",
+            showClass: {
+                popup: 'swal2-show swal2-animate-error'
+            },
+            hideClass: {
+                popup: 'swal2-hide'
+            }
+        }).then(() => {
+
+            // scroll ke form edit
+            editSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+            // trigger animasi pop out
+            editSection.classList.add('pop-error');
+
+            // reset animasi biar bisa kepake lagi
+            setTimeout(() => {
+                editSection.classList.remove('pop-error');
+            }, 600);
+        });
+    @endif
     </script>
+
 @endsection
