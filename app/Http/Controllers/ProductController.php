@@ -130,7 +130,7 @@ class ProductController extends Controller
 
     return redirect()
         ->route('products.index')
-        ->with('ubah', 'Produk ' . $product->nama_barang . ' berhasil diperbarui');
+        ->with('success', 'Produk ' . $product->nama_barang . ' berhasil diperbarui');
 }
 
 
