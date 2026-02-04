@@ -3,7 +3,7 @@
     @include('be.menu')
 @endsection
 
-@section('products')
+@section('purchases')
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
             <span class="alert-icon"><i class="ni ni-like-2"></i></span>
@@ -115,14 +115,14 @@
                                             <td class="align-middle text-center">
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
                                                     {{-- Tombol Edit --}}
-                                                    <a href="{{ route('products.edit', $item->id) }}"
+                                                    <a href="{{ route('purchases.edit', $item->id) }}"
                                                         class="btn btn-link text-warning text-gradient px-3 mb-0 confirm-edit"
                                                         data-bs-toggle="tooltip" data-bs-title="Edit Data">
                                                         <i class="ni ni-ruler-pencil me-2"></i>Edit
                                                     </a>
 
                                                     {{-- Tombol Delete --}}
-                                                    <form action="{{ route('products.destroy', $item->id) }}"
+                                                    <form action="{{ route('purchases.destroy', $item->id) }}"
                                                         method="POST" class="d-inline delete-form">
                                                         @csrf
                                                         @method('DELETE')
@@ -141,7 +141,7 @@
                         </div>
                         <div class="px-4 py-3 text-end">
                             <a class="btn bg-gradient-dark mb-0" id="btn-add-product"
-                                href="{{ route('products.create') }}">
+                                href="{{ route('purchases.create') }}">
                                 <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Product
                             </a>
                         </div>

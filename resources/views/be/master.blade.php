@@ -67,6 +67,9 @@
   @if (str_contains($title, 'Product') || $title === 'Products')
     @yield('products')
   @endif
+  @if (str_contains($title, 'Purchase') || $title === 'Purchases')
+    @yield('purchases')
+  @endif
   </main>   
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">

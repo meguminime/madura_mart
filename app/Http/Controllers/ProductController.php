@@ -44,7 +44,7 @@ class ProductController extends Controller
             'foto_barang' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $validated;
+        $data = $validated; 
 
         if ($request->hasFile('foto_barang')) {
             $file = $request->file('foto_barang');
@@ -82,22 +82,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, $id)
+    public function update(Request $request, $id)
 {
-   $product = Product::findOrFail($id);
-
-    // 🔍 cek duplikat (kecuali dirinya sendiri)
-    $duplikat = Product::where('kd_barang', $request->kd_barang)
-        ->where('nama_barang', $request->nama_barang)
-        ->where('jenis_barang', $request->jenis_barang)
-        ->where('id', '!=', $id)
-        ->first();
-
-    if ($duplikat) {
-        return redirect()
-            ->route('products.edit', $id)
-            ->with('duplikat', 'Produk dengan data yang sama sudah ada.');
-    }
+    $product = Product::findOrFail($id);
 
     $data = $request->only([
         'kd_barang',
@@ -108,30 +95,36 @@ class ProductController extends Controller
         'stok'
     ]);
 
-    // 📸 kalau upload foto baru
+    // cek apakah ADA perubahan
+    $product->fill($data);
+
+    if (!$product->isDirty() && !$request->hasFile('foto_barang')) {
+        return redirect()
+            ->route('products.index')
+            ->with('duplicated', true);
+    }
+
+    // 📸 upload foto baru
     if ($request->hasFile('foto_barang')) {
 
-        // hapus foto lama
-        if (
-            $product->foto_barang &&
-            Storage::exists('public/foto_barang/' . $product->foto_barang)
-        ) {
-            Storage::delete('public/foto_barang/' . $product->foto_barang);
+        if ($product->foto_barang && Storage::disk('public')->exists($product->foto_barang)) {
+            Storage::disk('public')->delete($product->foto_barang);
         }
 
         $file = $request->file('foto_barang');
-        $namaFile = time() . '_' . $file->getClientOriginalName();
-        $file->storeAs('public/foto_barang', $namaFile);
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('products', $filename, 'public');
 
-        $data['foto_barang'] = $namaFile;
+        $data['foto_barang'] = $path;
     }
 
     $product->update($data);
 
     return redirect()
         ->route('products.index')
-        ->with('success', 'Produk ' . $product->nama_barang . ' berhasil diperbarui');
+        ->with('success', 'Produk berhasil diperbarui');
 }
+
 
 
     /**
