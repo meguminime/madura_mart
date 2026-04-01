@@ -70,6 +70,9 @@
   @if (str_contains($title, 'Purchase') || $title === 'Purchases')
     @yield('purchases')
   @endif
+  @if ($title === 'User')
+    @yield('user')
+  @endif
   </main>   
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
