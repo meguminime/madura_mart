@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barang');
             $table->foreign('id_barang')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('harga_beli')->default(0);
-            $table->tinyInteger('margin_jual')->default(0);
+            $table->integer('margin_jual')->default(0);
             $table->integer('jumlah_beli')->default(0);
             $table->bigInteger('subtotal')->default(0);
             $table->timestamps();

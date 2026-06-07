@@ -14,9 +14,6 @@
                 <h6 class="font-weight-bolder mb-0">{{ $title }}</h6>
             </nav>
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                {{-- <div class="d-flex align-items-center">
-                    <a href="{{ route('purchase.create') }}" class="btn bg-gradient-dark w-100 my-4 mb-4"> Add new {{ $title }}</a>
-                <div> --}}
                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                     <div class="input-group">
                         <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
@@ -25,10 +22,17 @@
                 </div>
                 <ul class="navbar-nav  justify-content-end">
                     <li class="nav-item d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                            <i class="fa fa-user me-sm-1"></i>
-                            <span class="d-sm-inline d-none">Sign In</span>
-                        </a>
+                         <span class="nav-link text-body font-weight-bold px-0 me-2">
+                    <i class="fa fa-user me-sm-1"></i>
+                    <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
+                </span>
+                <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center m-0">
+                    @csrf
+                    <button type="submit" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent cursor-pointer" title="Logout">
+                        <i class="fas fa-sign-out-alt me-sm-1"></i>
+                        <span class="d-sm-inline d-none">Logout</span>
+                    </button>
+                </form>
                     </li>
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -186,8 +190,8 @@
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">Rp. {{number_format($data->subtotal, 0, ',', '.')}}</td>
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">Rp. {{number_format($data->total_bayar, 0, ',', '.')}}</td>
                         <td class="text-uppercase text-xs text-secondary mb-0 ps-4">
-                            <a href="{{ route('purchase.edit', $data->id_purchases) }}"><img src="{{asset('be/assets/img/icon/edit.png')}}" alt="" width="20"></a>
-                            <a href="{{ route('purchase.destroy', $data->id_purchases) }}" onclick="hapus(event, this)"><img src="{{asset('be/assets/img/icon/trash.png')}}" alt="gambar sampah" width="20" class="cursor-pointer me-2" title="delete"></a>
+                            <a href="javascript:;" onclick="editPurchase({{ $data->id_purchases }})"><img src="{{asset('be/assets/img/icon/edit.png')}}" alt="edit" width="20"></a>
+                            <a href="javascript:;" onclick="deletePurchase({{ $data->id_purchases }})"><img src="{{asset('be/assets/img/icon/trash.png')}}" alt="gambar sampah" width="20" class="cursor-pointer me-2" title="delete"></a>
                         </td>
                     </tr>
                     {{-- Modal Foto Produk --}}
@@ -253,52 +257,144 @@
                     </div>
                 </div>
             </footer>
-            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
-                let btnSimpan = document.getElementById('simpan');
-                let frm = document.getElementById('frm');
-                let kd_barang = document.getElementById('kd_barang');
-                let nama_barang = document.getElementById('nama_barang');
-                let jenis_barang = document.getElementById('jenis_barang');
-                let tgl_expired = document.getElementById('tgl_expired');
-                let harga_jual = document.getElementById('harga_jual');
-                let stok = document.getElementById('stok');
-                let foto_barang = document.getElementById('foto_barang');
+                // CSRF token for AJAX requests
+                const csrfToken = '{{ csrf_token() }}';
 
-                btnSimpan.addEventListener('click', function() {
-                    
-                    if(kd_barang.value.trim() === ''){
-                        kd_barang.focus();
-                        swal("Invalid!", "Product Code cannot be empty", "error");
-                        return;
-                    }
-                    else if(nama_barang.value.trim() === ''){
-                        nama_barang.focus();
-                        swal("Invalid!", "Product Name cannot be empty", "error");
-                        return;
-                    }
-                    else if(jenis_barang.value.trim() === ''){
-                        jenis_barang.focus();
-                        swal("Invalid!", "Product Type cannot be empty", "error");
-                        return;
-                    }
-                    else if(tgl_expired.value.trim() === ''){
-                        tgl_expired.focus();
-                        swal("Invalid!", "Expired Date cannot be empty", "error");
-                        return;
-                    }
-                    else if(foto_barang.value.trim() === ''){
-                        foto_barang.focus();
-                        swal("Invalid!", "Product Image cannot be empty", "error");
-                        return;
-                    }
-                    else{
-                        frm.submit();
-                    }
-                });
+                function editPurchase(id) {
+                    Swal.fire({
+                        title: "Password required!",
+                        text: "Write your boss's password:",
+                        input: "password",
+                        showCancelButton: true,
+                        confirmButtonColor: "#e91e8c",
+                        confirmButtonText: "OK",
+                        cancelButtonText: "CANCEL",
+                        inputPlaceholder: "Enter password"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (!result.value) {
+                                Swal.fire("Error!", "Password is required!", "error");
+                                return;
+                            }
 
-                @if (session('duplikat'))
-                    swal('Duplicated Data', '{{ session('duplikat') }}', 'error');
+                            // Validate password via AJAX
+                            fetch("{{ route('purchase.validatePassword') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": csrfToken
+                                },
+                                body: JSON.stringify({ password: result.value })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: "Nice!",
+                                        text: "Your password is correct!",
+                                        icon: "success",
+                                        confirmButtonColor: "#e91e8c",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        window.location.href = "/purchase/" + id + "/edit";
+                                    });
+                                } else {
+                                    Swal.fire("Error!", data.message, "error");
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            });
+                        }
+                    });
+                }
+
+                function deletePurchase(id) {
+                    Swal.fire({
+                        title: "Password required!",
+                        text: "Write your boss's password:",
+                        input: "password",
+                        showCancelButton: true,
+                        confirmButtonColor: "#e91e8c",
+                        confirmButtonText: "OK",
+                        cancelButtonText: "CANCEL",
+                        inputPlaceholder: "Enter password"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (!result.value) {
+                                Swal.fire("Error!", "Password is required!", "error");
+                                return;
+                            }
+
+                            // Validate password via AJAX
+                            fetch("{{ route('purchase.validatePassword') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": csrfToken
+                                },
+                                body: JSON.stringify({ password: result.value })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Show delete confirmation
+                                    Swal.fire({
+                                        title: "Are you sure want to delete?",
+                                        text: "Your will not be able to recover this data!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "YES, DELETE IT!",
+                                        cancelButtonText: "CANCEL"
+                                    }).then((deleteResult) => {
+                                        if (deleteResult.isConfirmed) {
+                                            // Delete via AJAX
+                                            fetch("/purchase/" + id, {
+                                                method: "DELETE",
+                                                headers: {
+                                                    "Content-Type": "application/json",
+                                                    "X-CSRF-TOKEN": csrfToken
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(resultData => {
+                                                if (resultData.success) {
+                                                    Swal.fire({
+                                                        title: "Deleted!",
+                                                        text: resultData.message,
+                                                        icon: "success"
+                                                    }).then(() => {
+                                                        window.location.reload();
+                                                    });
+                                                } else {
+                                                    Swal.fire("Error!", resultData.message, "error");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire("Error!", data.message, "error");
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            });
+                        }
+                    });
+                }
+
+                @if (session('success'))
+                    Swal.fire("Success!", "{{ session('success') }}", "success");
+                @endif
+
+                @if (session('error'))
+                    Swal.fire("Error!", "{{ session('error') }}", "error");
                 @endif
             </script>
         </div>

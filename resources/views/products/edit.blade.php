@@ -25,10 +25,17 @@
                 </div>
                 <ul class="navbar-nav  justify-content-end">
                     <li class="nav-item d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                            <i class="fa fa-user me-sm-1"></i>
-                            <span class="d-sm-inline d-none">Sign In</span>
-                        </a>
+                        <span class="nav-link text-body font-weight-bold px-0 me-2">
+                    <i class="fa fa-user me-sm-1"></i>
+                    <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
+                </span>
+                <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center m-0">
+                    @csrf
+                    <button type="submit" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent cursor-pointer" title="Logout">
+                        <i class="fas fa-sign-out-alt me-sm-1"></i>
+                        <span class="d-sm-inline d-none">Logout</span>
+                    </button>
+                </form>
                     </li>
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -168,18 +175,24 @@
                                     <div class="col-lg-6 col-md-6">
                                         <div class="mb-3 px-3 pt-3">
                                             <label for="harga_jual" class="form-label">Price</label>
-                                            <input type="text" class="form-control" id="harga_jual" name="harga_jual" placeholder="Enter Product Price" value="{{ old('harga_jual') ? old(harga_jual) : 0 }}" readonly>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rp.</span>
+                                                <input type="number" class="form-control" id="harga_jual" name="harga_jual" placeholder="Enter Product Price" value="{{ old('harga_jual', $data->harga_jual) }}" min="0">
+                                            </div>
                                         </div>
                                         <div class="mb-3 px-3 pt-3">
                                             <label for="stok" class="form-label">Stock</label>
-                                            <input type="text" class="form-control" id="stok" name="stok" placeholder="Enter Product Stock" value="{{ old('stok') ? old(stok) : 0 }}" readonly>
+                                            <input type="number" class="form-control" id="stok" name="stok" placeholder="Enter Product Stock" value="{{ old('stok', $data->stok) }}" min="0">
                                         </div>
                                         <div class="mb-3 px-3 pt-3">
                                             <label for="foto_barang" class="form-label">Image</label>
-                                            <input type="file" class="form-control" id="foto_barang" name="foto_barang" placeholder="Enter Product Image" value="{{ old('foto_barang') }}">
+                                            <input type="file" class="form-control" id="foto_barang" name="foto_barang" placeholder="Enter Product Image" value="{{ old('foto_barang') }}" accept="image/*">
+                                            <img id="image_preview" src="#" alt="New Image Preview" class="mt-3 d-none" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); object-fit: cover;">
                                             @if ($data->foto_barang)
-                                                <small class="text-muted d-block mt-2">Current Image:</small>
-                                                <img src="{{ asset('storage/' . $data->foto_barang) }}" alt="Current Image" width="100" class="mt-2">
+                                                <div id="current_image_container">
+                                                    <small class="text-muted d-block mt-2">Current Image:</small>
+                                                    <img src="{{ asset('storage/' . $data->foto_barang) }}" alt="Current Image" class="mt-2" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); object-fit: cover;">
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -246,6 +259,25 @@
                 let harga_jual = document.getElementById('harga_jual');
                 let stok = document.getElementById('stok');
                 let foto_barang = document.getElementById('foto_barang');
+                let image_preview = document.getElementById('image_preview');
+                let current_image_container = document.getElementById('current_image_container');
+
+                foto_barang.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        image_preview.src = URL.createObjectURL(file);
+                        image_preview.classList.remove('d-none');
+                        if (current_image_container) {
+                            current_image_container.classList.add('d-none');
+                        }
+                    } else {
+                        image_preview.src = '#';
+                        image_preview.classList.add('d-none');
+                        if (current_image_container) {
+                            current_image_container.classList.remove('d-none');
+                        }
+                    }
+                });
 
                 btnSimpan.addEventListener('click', function() {
                     

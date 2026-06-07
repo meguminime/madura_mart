@@ -47,7 +47,7 @@ class ProductController extends Controller
             return redirect()->route('products.create')->with('duplikat', 'Product ' . $request->nama_barang . ' data with name ' . $request->nama_barang . ' is already in the database!')->withInput();
         }else{
             $data = $request->all();
-            $data['foto_barang'] = $request->file('foto_barang')->store('product-images');
+            $data['foto_barang'] = $request->file('foto_barang')->store('product-images', 'public');
             Product::create($data);
             return redirect()->route('products.index')->with('simpan', 'The New Product data, ' . $request->nama_barang . ' has been successfully added to the database!');
         }
@@ -82,8 +82,8 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         if($request->hasFile('foto_barang')){
             $data = $request->all();
-            $data['foto_barang'] = $request->file('foto_barang')->store('product-images');
-            Storage::delete($foto_barang_lama);
+            $data['foto_barang'] = $request->file('foto_barang')->store('product-images', 'public');
+            Storage::disk('public')->delete($foto_barang_lama);
             $product->update($data);
             return redirect()->route('products.index')->with('update', 'The Product data, ' . $nama_lama . ' has been successfully updated!');
         }

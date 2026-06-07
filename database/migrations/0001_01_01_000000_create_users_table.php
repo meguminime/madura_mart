@@ -12,14 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('email')->unique();
-        $table->timestamp('email_verified_at')->nullable();
-        $table->string('password');
-        $table->string('role')->default('user'); 
-        $table->rememberToken();
-        $table->timestamps();
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->enum('role', ['admin', 'courier', 'customer', 'owner'])->default('customer');
+            $table->text('alamat')->nullable();
+            $table->string('no_telpon', 15)->nullable();
+            $table->string('foto', 255)->nullable();
+            $table->rememberToken();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -29,10 +32,6 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'courier', 'customer', 'owner']);
-            $table->text('alamat');
-            $table->string('no_telpon', 15);
-            $table->string('foto', 255)->nullable();
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();

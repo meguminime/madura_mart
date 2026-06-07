@@ -24,10 +24,17 @@
                     </div>
                     <ul class="navbar-nav  justify-content-end">
                         <li class="nav-item d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                                <i class="fa fa-user me-sm-1"></i>
-                                <span class="d-sm-inline d-none">Sign In</span>
-                            </a>
+                            <span class="nav-link text-body font-weight-bold px-0 me-2">
+                    <i class="fa fa-user me-sm-1"></i>
+                    <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
+                </span>
+                <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center m-0">
+                    @csrf
+                    <button type="submit" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent cursor-pointer" title="Logout">
+                        <i class="fas fa-sign-out-alt me-sm-1"></i>
+                        <span class="d-sm-inline d-none">Logout</span>
+                    </button>
+                </form>
                         </li>
                         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
